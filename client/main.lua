@@ -9,6 +9,61 @@ AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
     })
 end)
 
+local function SpawnPed()
+    if pedSpawned then return end
+    local model = joaat(Config.model)
+    lib.requestModel(model)
+    local coords = Config.coords4
+    local salesdude = CreatePed(0, model, coords.x, coords.y, coords.z-1.0, coords.w, false, false)
+
+
+    TaskStartScenarioInPlace(salesdude, 'PROP_HUMAN_STAND_IMPATIENT', 0, true)
+    FreezeEntityPosition(salesdude, true)
+    SetEntityInvincible(salesdude, true)
+    SetBlockingOfNonTemporaryEvents(salesdude, true)
+
+    pedSpawned = true
+    if true then
+        if IsTargetReady then
+            if Config.targettype == 'ox' then
+                exports.ox_target:addLocalEntity(salesdude, {
+                    {
+                        name = 'rj-carinsurance',
+                        label = 'Get New Insurance',
+                        event = 'rj-carinsurance:client:target',
+                        icon = 'fa-solid fa-clipboard',
+                        canInteract = function(_, distance)
+                            return distance < 4.0
+                        end
+                    }
+                })
+            elseif Config.targettype == 'qb' then
+                exports['qb-target']:AddTargetEntity(salesdude, {
+                    {
+                        num = 1,
+                        type = 'client',
+                        event = 'rj-carinsurance:client:target',
+                        icon = 'ffa-solid fa-clipboard',
+                        label = 'Get New Insurance',
+                        canInteract = function(_, distance)
+                            return distance < 4.0
+                        end
+                    }
+                })
+            else
+                print('This target is not supported')
+            end
+        else
+            print('No targets found')
+        end
+    end
+end
+
+CreateThread(function()
+    SpawnPed()
+end)
+
+
 
 RegisterNetEvent('rj-carinsurance:client:target', function()
     local ped = PlayerPedId()
