@@ -1,4 +1,5 @@
 local QBCore = exports["qb-core"]:GetCoreObject()
+local IsTargetReady = GetResourceState(Config.target) == "started" or GetResourceState("ox_target") == "started" or GetResourceState("qb-target") == "started"
 local PlayerData = QBCore.Functions.GetPlayerData()
 
 AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
@@ -62,7 +63,6 @@ end
 CreateThread(function()
     SpawnPed()
 end)
-
 
 
 RegisterNetEvent('rj-carinsurance:client:target', function()
